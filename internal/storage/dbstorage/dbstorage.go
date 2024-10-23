@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
 )
 
@@ -21,7 +21,7 @@ func New(dbConn *pgxpool.Pool, log *zap.Logger) *Storage {
 }
 
 func Connection(connectionStr string) (*pgxpool.Pool, error) {
-	db, err := pgxpool.New(context.Background(), connectionStr)
+	db, err := pgxpool.Connect(context.Background(), connectionStr)
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to db: %v", err)
 	}

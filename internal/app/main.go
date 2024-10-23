@@ -3,7 +3,10 @@ package app
 import (
 	"fmt"
 	"server/internal/config"
+	"server/internal/storage/dbstorage"
 	"server/pkg/logger"
+
+	"go.uber.org/zap"
 )
 
 func StartServer() {
@@ -25,9 +28,13 @@ func StartServer() {
 
 	log := zapLog.ZapLogger
 
-	_ = log
-
 	// connect to db postgres
+	dbConn, err := dbstorage.Connection(cfg.DBDSN)
+	if err != nil {
+		log.Fatal("error connect to db", zap.Error(err))
+	}
+
+	defer dbConn.Close()
 
 	// init storage
 

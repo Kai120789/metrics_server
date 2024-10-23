@@ -6,17 +6,17 @@ import (
 	"server/internal/storage/filestorage"
 	"server/internal/storage/memstorage"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
 )
 
 type Storage interface {
 }
 
-func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) Storage {
-	if cfg.DBDSN != "" {
+func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config, value string) Storage {
+	if value == cfg.DBDSN {
 		return dbstorage.New(dbConn, log)
-	} else if cfg.FilePath != "" {
+	} else if value == cfg.FilePath {
 		return filestorage.New(cfg.FilePath, log)
 	}
 
