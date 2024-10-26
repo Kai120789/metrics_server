@@ -2,8 +2,13 @@ package app
 
 import (
 	"fmt"
+	"net/http"
 	"server/internal/config"
+	"server/internal/service"
+	"server/internal/storage"
 	"server/internal/storage/dbstorage"
+	"server/internal/transport/http/handler"
+	"server/internal/transport/http/router"
 	"server/pkg/logger"
 
 	"go.uber.org/zap"
@@ -37,14 +42,26 @@ func StartServer() {
 	defer dbConn.Close()
 
 	// init storage
+	dbstor := storage.New(dbConn, log, cfg, cfg.DBDSN)
 
 	// init service
-
-	// init service
+	serv := service.New(dbstor)
 
 	// init handler
+	handl := handler.New(serv, log)
 
 	// init router
+	r := router.New(&handl)
 
 	// start http-server
+	log.Info("starting server", zap.String("address", "localhost:8082"))
+
+	srv := &http.Server{
+		Addr:    "localhost:8082",
+		Handler: r,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server", zap.Error(err))
+	}
 }

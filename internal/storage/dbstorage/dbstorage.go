@@ -32,7 +32,21 @@ func Connection(connectionStr string) (*pgxpool.Pool, error) {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
-	return nil, nil
+	fmt.Println(3)
+	var retMetrics []models.Metric
+
+	for _, metric := range metrics {
+		var retMetric models.Metric
+		query := `INSERT INTO metrics (name, type, value, delta) VALUES ($1, $2, $3, $4) RETURNING id, name, type, value, delta, created_at`
+		err := s.Conn.QueryRow(context.Background(), query, metric.Name, metric.Type, &metric.Value, &metric.Delta).Scan(&retMetric.ID, &retMetric.Name, &retMetric.Type, retMetric.Value, retMetric.Delta, &retMetric.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		retMetrics = append(retMetrics, retMetric)
+	}
+
+	return &retMetrics, nil
 }
 
 func (s *Storage) SetUpdate() {

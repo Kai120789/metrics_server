@@ -1,6 +1,11 @@
 package filestorage
 
-import "go.uber.org/zap"
+import (
+	"server/internal/dto"
+	"server/internal/models"
+
+	"go.uber.org/zap"
+)
 
 type Storage struct {
 	FilePath string
@@ -14,8 +19,8 @@ func New(fp string, log *zap.Logger) *Storage {
 	}
 }
 
-func (s *Storage) SetUpdates() {
-
+func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+	return nil, nil
 }
 
 func (s *Storage) SetUpdate() {

@@ -2,6 +2,8 @@ package storage
 
 import (
 	"server/internal/config"
+	"server/internal/dto"
+	"server/internal/models"
 	"server/internal/storage/dbstorage"
 	"server/internal/storage/filestorage"
 	"server/internal/storage/memstorage"
@@ -11,7 +13,7 @@ import (
 )
 
 type Storage interface {
-	SetUpdates()
+	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
 	SetUpdate()
 	SetMetric()
 	GetMetricValue()
