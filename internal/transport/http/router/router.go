@@ -12,7 +12,7 @@ type Router interface {
 	SetUpdate(w http.ResponseWriter, r *http.Request)
 	SetMetric(w http.ResponseWriter, r *http.Request)
 	GetMetricValue(w http.ResponseWriter, r *http.Request)
-	GetGetHTML(w http.ResponseWriter, r *http.Request)
+	GetHTML(w http.ResponseWriter, r *http.Request)
 }
 
 func New(h *handler.Handler) http.Handler {

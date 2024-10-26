@@ -13,3 +13,23 @@ func New(fp string, log *zap.Logger) *Storage {
 		Logger:   log,
 	}
 }
+
+func (s *Storage) SetUpdates() {
+
+}
+
+func (s *Storage) SetUpdate() {
+
+}
+
+func (s *Storage) SetMetric() {
+
+}
+
+func (s *Storage) GetMetricValue() {
+
+}
+
+func (s *Storage) GetHTML() {
+
+}

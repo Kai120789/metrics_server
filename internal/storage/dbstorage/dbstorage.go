@@ -3,6 +3,8 @@ package dbstorage
 import (
 	"context"
 	"fmt"
+	"server/internal/dto"
+	"server/internal/models"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
@@ -27,4 +29,24 @@ func Connection(connectionStr string) (*pgxpool.Pool, error) {
 	}
 
 	return db, nil
+}
+
+func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+	return nil, nil
+}
+
+func (s *Storage) SetUpdate() {
+
+}
+
+func (s *Storage) SetMetric() {
+
+}
+
+func (s *Storage) GetMetricValue() {
+
+}
+
+func (s *Storage) GetHTML() {
+
 }

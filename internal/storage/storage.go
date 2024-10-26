@@ -11,6 +11,11 @@ import (
 )
 
 type Storage interface {
+	SetUpdates()
+	SetUpdate()
+	SetMetric()
+	GetMetricValue()
+	GetHTML()
 }
 
 func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config, value string) Storage {
