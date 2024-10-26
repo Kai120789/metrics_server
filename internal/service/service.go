@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"server/internal/dto"
 	"server/internal/models"
 )
@@ -25,7 +24,6 @@ func New(s Storager) *Service {
 }
 
 func (s *Service) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
-	fmt.Println(2)
 	met, err := s.storage.SetUpdates(metrics)
 	if err != nil {
 		return nil, err

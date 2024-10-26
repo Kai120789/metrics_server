@@ -32,7 +32,6 @@ func Connection(connectionStr string) (*pgxpool.Pool, error) {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
-	fmt.Println(3)
 	var retMetrics []models.Metric
 
 	for _, metric := range metrics {

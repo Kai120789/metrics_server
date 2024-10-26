@@ -31,7 +31,6 @@ func New(s Handlerer, l *zap.Logger) Handler {
 }
 
 func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(1)
 	var metrics []dto.Metric
 	if err := json.NewDecoder(r.Body).Decode(&metrics); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
