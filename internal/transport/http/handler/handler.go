@@ -38,6 +38,11 @@ func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("Metrics received:")
+	for i, metric := range metrics {
+		fmt.Printf("Metric %d: %+v\n", i+1, metric)
+	}
+
 	_, err := h.service.SetUpdates(metrics)
 	if err != nil {
 		return
