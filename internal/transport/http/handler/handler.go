@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"server/internal/dto"
 	"server/internal/models"
+	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +19,7 @@ type Handler struct {
 
 type Handlerer interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
-	SetMetric()
+	SetMetric(metric dto.Metric) (*models.Metric, error)
 	GetMetricValue()
 	GetHTML()
 }
@@ -52,7 +54,28 @@ func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) SetMetric(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	typeStr := chi.URLParam(r, "type")
+	valueStr := chi.URLParam(r, "value")
 
+	value, err := strconv.ParseFloat(valueStr, 64)
+	if err != nil {
+		http.Error(w, "Invalid Value", http.StatusBadRequest)
+		return
+	}
+
+	metric := dto.Metric{
+		Name:  name,
+		Type:  typeStr,
+		Value: &value,
+	}
+
+	metricRet, err := h.service.SetMetric(metric)
+	if err != nil {
+		return
+	}
+
+	_ = metricRet
 }
 
 func (h *Handler) GetMetricValue(w http.ResponseWriter, r *http.Request) {
