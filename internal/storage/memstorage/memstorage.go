@@ -20,8 +20,8 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return nil, nil
 }
 
-func (s *Storage) GetMetricValue() {
-
+func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
+	return nil, nil
 }
 
 func (s *Storage) GetHTML() {

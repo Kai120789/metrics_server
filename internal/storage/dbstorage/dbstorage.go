@@ -7,6 +7,7 @@ import (
 	"server/internal/models"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
 	"go.uber.org/zap"
 )
 
@@ -69,8 +70,22 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return &retMetric, nil
 }
 
-func (s *Storage) GetMetricValue() {
+func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
+	var value int64
 
+	query := `SELECT value FROM metrics WHERE name = $1 AND type = $2 ORDER BY created_at DESC`
+	row := s.Conn.QueryRow(context.Background(), query, name, typeStr)
+
+	err := row.Scan(&value)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &value, nil
 }
 
 func (s *Storage) GetHTML() {
