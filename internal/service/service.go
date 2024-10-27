@@ -1,6 +1,7 @@
 package service
 
 import (
+	"net/http"
 	"server/internal/dto"
 	"server/internal/models"
 	"text/template"
@@ -50,10 +51,10 @@ func (s *Service) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return val, nil
 }
 
-func (s *Service) GetHTML() (*[]models.Metric, *template.Template, error) {
+func (s *Service) GetHTML(w http.ResponseWriter) error {
 	metrics, err := s.storage.GetMetricsForHTML()
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
 	// Подготовка шаблона HTML для отображения метрик
@@ -92,8 +93,13 @@ func (s *Service) GetHTML() (*[]models.Metric, *template.Template, error) {
 
 	t, err := template.New("metrics").Parse(tmpl)
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	return metrics, t, nil
+	err = t.Execute(w, metrics)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

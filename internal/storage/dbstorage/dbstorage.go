@@ -89,7 +89,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
-	query := `SELECT * FROM metrics LIMIT 31`
+	query := `SELECT * FROM metrics ORDER BY created_at DESC LIMIT 31`
 	rows, err := s.Conn.Query(context.Background(), query)
 	if err != nil {
 		return nil, err

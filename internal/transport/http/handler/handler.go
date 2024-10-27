@@ -21,7 +21,7 @@ type Handlerer interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
 	GetMetricValue(name string, typeStr string) (*int64, error)
-	GetHTML()
+	GetHTML(w http.ResponseWriter) error
 }
 
 func New(s Handlerer, l *zap.Logger) Handler {
@@ -72,6 +72,7 @@ func (h *Handler) SetMetric(w http.ResponseWriter, r *http.Request) {
 
 	metricRet, err := h.service.SetMetric(metric)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -86,6 +87,7 @@ func (h *Handler) GetMetricValue(w http.ResponseWriter, r *http.Request) {
 
 	metricValue, err := h.service.GetMetricValue(name, typeStr)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -95,5 +97,9 @@ func (h *Handler) GetMetricValue(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetHTML(w http.ResponseWriter, r *http.Request) {
-
+	err := h.service.GetHTML(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
