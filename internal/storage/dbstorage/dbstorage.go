@@ -88,8 +88,27 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return &value, nil
 }
 
-func (s *Storage) GetHTML() {
+func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+	query := `SELECT * FROM metrics LIMIT 31`
+	rows, err := s.Conn.Query(context.Background(), query)
+	if err != nil {
+		return nil, err
+	}
 
+	defer rows.Close()
+
+	var metrics []models.Metric
+	for rows.Next() {
+		var metric models.Metric
+		err := rows.Scan(&metric.ID, &metric.Name, &metric.Type, &metric.Value, &metric.Delta, &metric.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		metrics = append(metrics, metric)
+	}
+
+	return &metrics, nil
 }
 
 func (s *Storage) getNextPollCountDelta() *int64 {

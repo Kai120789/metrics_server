@@ -31,6 +31,6 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return nil, nil
 }
 
-func (s *Storage) GetHTML() {
-
+func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+	return nil, nil
 }
