@@ -12,7 +12,7 @@ type Service struct {
 type Storager interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
-	GetMetricValue()
+	GetMetricValue(name string, typeStr string) (*int64, error)
 	GetHTML()
 }
 
@@ -40,8 +40,13 @@ func (s *Service) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return met, nil
 }
 
-func (s *Service) GetMetricValue() {
+func (s *Service) GetMetricValue(name string, typeStr string) (*int64, error) {
+	val, err := s.storage.GetMetricValue(name, typeStr)
+	if err != nil {
+		return nil, err
+	}
 
+	return val, nil
 }
 
 func (s *Service) GetHTML() {

@@ -20,7 +20,7 @@ type Handler struct {
 type Handlerer interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
-	GetMetricValue()
+	GetMetricValue(name string, typeStr string) (*int64, error)
 	GetHTML()
 }
 
@@ -81,7 +81,17 @@ func (h *Handler) SetMetric(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetMetricValue(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "name")
+	typeStr := chi.URLParam(r, "type")
 
+	metricValue, err := h.service.GetMetricValue(name, typeStr)
+	if err != nil {
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(metricValue)
 }
 
 func (h *Handler) GetHTML(w http.ResponseWriter, r *http.Request) {
