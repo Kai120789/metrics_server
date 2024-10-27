@@ -75,7 +75,9 @@ func (h *Handler) SetMetric(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = metricRet
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(metricRet)
 }
 
 func (h *Handler) GetMetricValue(w http.ResponseWriter, r *http.Request) {
