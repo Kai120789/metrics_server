@@ -32,7 +32,13 @@ func Connection(connectionStr string) (*pgxpool.Pool, error) {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+
 	var retMetrics []models.Metric
+	next := s.getNextPollCountDelta()
+
+	if next != nil {
+		*metrics[0].Delta = *next
+	}
 
 	for _, metric := range metrics {
 		var retMetric models.Metric
@@ -40,7 +46,7 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		err := s.Conn.QueryRow(context.Background(), query, metric.Name, metric.Type, &metric.Value, &metric.Delta).Scan(&retMetric.ID, &retMetric.Name, &retMetric.Type, &retMetric.Value, &retMetric.Delta, &retMetric.CreatedAt)
 		if err != nil {
 			s.Logger.Error("Failed to insert metric", zap.Error(err))
-			continue // Переход к следующей метрике
+			continue
 		}
 
 		retMetrics = append(retMetrics, retMetric)
@@ -63,4 +69,30 @@ func (s *Storage) GetMetricValue() {
 
 func (s *Storage) GetHTML() {
 
+}
+
+func (s *Storage) getNextPollCountDelta() *int64 {
+	query := `SELECT delta FROM metrics WHERE type = 'counter' ORDER BY delta DESC LIMIT 1`
+	row := s.Conn.QueryRow(context.Background(), query)
+
+	var max int64
+	err := row.Scan(&max)
+	if err != nil {
+
+		return nil
+	}
+
+	query = `SELECT delta FROM metrics WHERE type = 'counter' DESC LIMIT 1`
+	row = s.Conn.QueryRow(context.Background(), query)
+
+	var min int64
+	err = row.Scan(&min)
+	if err != nil {
+
+		return nil
+	}
+
+	next := max + min
+
+	return &next
 }

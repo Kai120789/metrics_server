@@ -42,13 +42,14 @@ func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Metric %d: %+v\n", i+1, metric)
 	}
 
-	_, err := h.service.SetUpdates(metrics)
+	resMetrics, err := h.service.SetUpdates(metrics)
 	if err != nil {
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(resMetrics)
 }
 
 func (h *Handler) SetUpdate(w http.ResponseWriter, r *http.Request) {
