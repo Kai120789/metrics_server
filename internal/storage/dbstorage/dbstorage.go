@@ -40,10 +40,12 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		*metrics[0].Delta = *next
 	}
 
+	fmt.Println(metrics[0].Delta)
+
 	for _, metric := range metrics {
 		var retMetric models.Metric
 		query := `INSERT INTO metrics (name, type, value, delta) VALUES ($1, $2, $3, $4) RETURNING id, name, type, value, delta, created_at`
-		err := s.Conn.QueryRow(context.Background(), query, metric.Name, metric.Type, &metric.Value, &metric.Delta).Scan(&retMetric.ID, &retMetric.Name, &retMetric.Type, &retMetric.Value, &retMetric.Delta, &retMetric.CreatedAt)
+		err := s.Conn.QueryRow(context.Background(), query, metric.Name, metric.Type, metric.Value, &metric.Delta).Scan(&retMetric.ID, &retMetric.Name, &retMetric.Type, &retMetric.Value, &retMetric.Delta, &retMetric.CreatedAt)
 		if err != nil {
 			s.Logger.Error("Failed to insert metric", zap.Error(err))
 			continue
@@ -56,8 +58,15 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
+	var retMetric models.Metric
 
-	return nil, nil
+	query := `INSERT INTO metrics (name, type, value, delta) VALUES ($1, $2, $3, $4) RETURNING id, name, type, value, delta, created_at`
+	err := s.Conn.QueryRow(context.Background(), query, metric.Name, metric.Type, metric.Value, nil).Scan(&retMetric.ID, &retMetric.Name, &retMetric.Type, &retMetric.Value, &retMetric.Delta, &retMetric.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &retMetric, nil
 }
 
 func (s *Storage) GetMetricValue() {
@@ -75,21 +84,23 @@ func (s *Storage) getNextPollCountDelta() *int64 {
 	var max int64
 	err := row.Scan(&max)
 	if err != nil {
-
+		fmt.Println(err.Error())
 		return nil
 	}
 
-	query = `SELECT delta FROM metrics WHERE type = 'counter' DESC LIMIT 1`
+	query = `SELECT delta FROM metrics WHERE type = 'counter' LIMIT 1`
 	row = s.Conn.QueryRow(context.Background(), query)
 
 	var min int64
 	err = row.Scan(&min)
 	if err != nil {
-
+		fmt.Println(err.Error())
 		return nil
 	}
 
 	next := max + min
+
+	fmt.Println(min, max, next)
 
 	return &next
 }
