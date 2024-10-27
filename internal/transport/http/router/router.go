@@ -20,7 +20,6 @@ func New(h *handler.Handler) http.Handler {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Post("/updates", h.SetUpdates)
-		r.Post("/update", h.SetUpdate)
 		r.Post("/{type}/{name}/{value}", h.SetMetric)
 		r.Get("/value/{type}/{name}", h.GetMetricValue)
 	})

@@ -14,7 +14,6 @@ import (
 
 type Storage interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
-	SetUpdate()
 	SetMetric()
 	GetMetricValue()
 	GetHTML()

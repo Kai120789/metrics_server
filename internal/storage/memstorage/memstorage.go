@@ -16,10 +16,6 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 	return nil, nil
 }
 
-func (s *Storage) SetUpdate() {
-
-}
-
 func (s *Storage) SetMetric() {
 
 }

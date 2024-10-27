@@ -17,7 +17,6 @@ type Handler struct {
 
 type Handlerer interface {
 	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
-	SetUpdate()
 	SetMetric()
 	GetMetricValue()
 	GetHTML()
@@ -50,10 +49,6 @@ func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(resMetrics)
-}
-
-func (h *Handler) SetUpdate(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func (h *Handler) SetMetric(w http.ResponseWriter, r *http.Request) {
