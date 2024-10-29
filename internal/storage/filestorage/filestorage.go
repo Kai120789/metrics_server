@@ -86,7 +86,36 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
-	return nil, nil
+	retMetrics, err := s.readMetrics()
+	if err != nil {
+		return nil, err
+	}
+
+	var flag bool = true
+
+	var retMetric models.Metric
+
+	for _, met := range retMetrics {
+		if met.Name == metric.Name && met.Type == metric.Type {
+			met.Value = metric.Value
+			met.Delta = metric.Delta
+			retMetric = met
+			flag = false
+		}
+	}
+
+	if flag {
+		retMetric = models.Metric{
+			ID:        uint(len(retMetrics) + 1),
+			Name:      metric.Name,
+			Type:      metric.Type,
+			Value:     metric.Value,
+			Delta:     metric.Delta,
+			CreatedAt: time.Now(),
+		}
+	}
+
+	return &retMetric, nil
 }
 
 func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
@@ -122,7 +151,6 @@ func (s *Storage) readMetrics() ([]models.Metric, error) {
 		return nil, err
 	}
 
-	// Проверка на пустой файл
 	if len(file) == 0 {
 		return []models.Metric{}, nil
 	}
