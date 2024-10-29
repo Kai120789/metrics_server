@@ -6,6 +6,7 @@ import (
 	"os"
 	"server/internal/dto"
 	"server/internal/models"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -23,7 +24,6 @@ func New(fp string, log *zap.Logger) *Storage {
 }
 
 func CreateFile(filePath string) (*os.File, error) {
-	var file os.File
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		file, err := os.Create(filePath)
 		if err != nil {
@@ -32,12 +32,13 @@ func CreateFile(filePath string) (*os.File, error) {
 		}
 		defer file.Close()
 		fmt.Println("File successfuly created")
+		return file, nil
 
 	} else {
 		fmt.Println("File is ready exist")
 	}
 
-	return &file, nil
+	return nil, nil
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
@@ -46,10 +47,30 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		return nil, err
 	}
 
-	delta := retMetricsPrev[0].Delta
-	*metrics[0].Delta = *delta + 5
+	if len(retMetricsPrev) != 0 {
+		delta := retMetricsPrev[0].Delta
+		*metrics[0].Delta = *delta + 5
+	}
 
-	data, err := json.Marshal(metrics)
+	var dataMetrics []models.Metric
+	var id uint = 1
+
+	for _, metric := range metrics {
+
+		dataMetric := models.Metric{
+			ID:        id,
+			Name:      metric.Name,
+			Type:      metric.Type,
+			Value:     metric.Value,
+			Delta:     metric.Delta,
+			CreatedAt: time.Now(),
+		}
+
+		dataMetrics = append(dataMetrics, dataMetric)
+		id += 1
+	}
+
+	data, err := json.Marshal(dataMetrics)
 	if err != nil {
 		return nil, err
 	}
