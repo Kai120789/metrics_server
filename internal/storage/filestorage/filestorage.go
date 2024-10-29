@@ -1,6 +1,7 @@
 package filestorage
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"server/internal/dto"
@@ -40,7 +41,27 @@ func CreateFile(filePath string) (*os.File, error) {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
-	return nil, nil
+	retMetricsPrev, err := s.readMetrics()
+	if err != nil {
+		return nil, err
+	}
+
+	delta := retMetricsPrev[0].Delta
+	*metrics[0].Delta = *delta + 5
+
+	data, err := json.Marshal(metrics)
+	if err != nil {
+		return nil, err
+	}
+
+	os.WriteFile(s.FilePath, data, os.ModePerm)
+
+	retMetrics, err := s.readMetrics()
+	if err != nil {
+		return nil, err
+	}
+
+	return &retMetrics, nil
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
@@ -53,4 +74,26 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
 	return nil, nil
+}
+
+func (s *Storage) readMetrics() ([]models.Metric, error) {
+	file, err := os.ReadFile(s.FilePath)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	// Проверка на пустой файл
+	if len(file) == 0 {
+		return []models.Metric{}, nil
+	}
+
+	var metrics []models.Metric
+	err = json.Unmarshal(file, &metrics)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	return metrics, nil
 }
