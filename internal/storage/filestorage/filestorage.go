@@ -94,7 +94,12 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
-	return nil, nil
+	retMetrics, err := s.readMetrics()
+	if err != nil {
+		return nil, err
+	}
+
+	return &retMetrics, nil
 }
 
 func (s *Storage) readMetrics() ([]models.Metric, error) {
