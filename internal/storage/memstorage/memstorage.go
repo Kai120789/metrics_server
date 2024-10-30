@@ -82,7 +82,15 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 }
 
 func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
-	return nil, nil
+	var value int64
+
+	for _, metric := range *s.Metrics {
+		if metric.Name == name && typeStr == metric.Type {
+			value = int64(*metric.Value)
+		}
+	}
+
+	return &value, nil
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
