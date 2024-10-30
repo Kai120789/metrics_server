@@ -53,7 +53,32 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
-	return nil, nil
+	var retMetric models.Metric
+	var flag bool = true
+
+	for _, met := range *s.Metrics {
+		if met.Name == metric.Name && met.Type == metric.Type {
+			met.Value = metric.Value
+			met.Delta = metric.Delta
+			retMetric = met
+			flag = false
+		}
+	}
+
+	if flag {
+		retMetric = models.Metric{
+			ID:        uint(len(*s.Metrics) + 1),
+			Name:      metric.Name,
+			Type:      metric.Type,
+			Value:     metric.Value,
+			Delta:     metric.Delta,
+			CreatedAt: time.Now(),
+		}
+	}
+
+	*s.Metrics = append(*s.Metrics, retMetric)
+
+	return &retMetric, nil
 }
 
 func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
