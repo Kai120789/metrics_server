@@ -6,7 +6,6 @@ import (
 	"server/internal/config"
 	"server/internal/service"
 	"server/internal/storage"
-	"server/internal/storage/filestorage"
 	"server/internal/transport/http/handler"
 	"server/internal/transport/http/router"
 	"server/pkg/logger"
@@ -33,10 +32,10 @@ func StartServer() {
 
 	log := zapLog.ZapLogger
 
-	_, err = filestorage.CreateFile(cfg.FilePath)
+	/*_, err = filestorage.CreateFile(cfg.FilePath)
 	if err != nil {
 		return
-	}
+	}*/
 
 	// connect to db postgres
 	/*dbConn, err := dbstorage.Connection(cfg.DBDSN)
@@ -47,7 +46,7 @@ func StartServer() {
 	defer dbConn.Close()*/
 
 	// init storage
-	dbstor := storage.New(nil, log, cfg, cfg.FilePath)
+	dbstor := storage.New(nil, log, cfg, "")
 
 	// init service
 	serv := service.New(dbstor)

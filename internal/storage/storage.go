@@ -26,5 +26,5 @@ func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config, value string
 		return filestorage.New(cfg.FilePath, log)
 	}
 
-	return memstorage.New()
+	return memstorage.New([]models.Metric{}, &zap.Logger{})
 }
