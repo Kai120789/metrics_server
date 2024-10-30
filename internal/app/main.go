@@ -52,7 +52,7 @@ func StartServer() {
 	serv := service.New(dbstor)
 
 	// init handler
-	handl := handler.New(serv, log)
+	handl := handler.New(serv, log, cfg)
 
 	// init router
 	r := router.New(&handl)

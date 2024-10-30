@@ -16,6 +16,7 @@ type Config struct {
 	RestoreMetrics bool
 	FilePath       string
 	DBDSN          string
+	SecretKey      string
 }
 
 func GetConfig() (*Config, error) {
@@ -29,6 +30,7 @@ func GetConfig() (*Config, error) {
 	flag.StringVar(&cfg.FilePath, "f", "", "Path to file with saving metrics")
 	flag.StringVar(&cfg.DBDSN, "d", "", "DBDSN for database")
 
+	cfg.SecretKey = getEnvStringOrDefault("SECRET_KEY", "default")
 	cfg.ServerURL = getEnvStringOrDefault("SERVER_URL", "http://localhost:8080")
 	cfg.FilePath = getEnvStringOrDefault("FILEPATH", "./")
 	cfg.DBDSN = getEnvStringOrDefault("DBDSN", "postgres://postgres:password@0.0.0.0:5432/dbname")

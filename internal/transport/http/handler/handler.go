@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"server/internal/config"
 	"server/internal/dto"
 	"server/internal/models"
+	"server/internal/utils"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -15,6 +17,7 @@ import (
 type Handler struct {
 	service Handlerer
 	logger  *zap.Logger
+	config  *config.Config
 }
 
 type Handlerer interface {
@@ -24,14 +27,32 @@ type Handlerer interface {
 	GetHTML(w http.ResponseWriter) error
 }
 
-func New(s Handlerer, l *zap.Logger) Handler {
+func New(s Handlerer, l *zap.Logger, c *config.Config) Handler {
 	return Handler{
 		service: s,
 		logger:  l,
+		config:  c,
 	}
 }
 
 func (h *Handler) SetUpdates(w http.ResponseWriter, r *http.Request) {
+
+	// get header Hash
+	receivedHash := r.Header.Get("Hash")
+	if receivedHash == "" {
+		http.Error(w, "Missing Hash header", http.StatusUnauthorized)
+		return
+	}
+
+	// generate hash
+	expectedHash := utils.GenerateHash(h.config.SecretKey)
+
+	// check hashes compare
+	if receivedHash != expectedHash {
+		http.Error(w, "Invalid Hash header", http.StatusUnauthorized)
+		return
+	}
+
 	var metrics []dto.Metric
 	if err := json.NewDecoder(r.Body).Decode(&metrics); err != nil {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
