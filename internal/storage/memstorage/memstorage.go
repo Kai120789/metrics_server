@@ -22,6 +22,7 @@ func New(metrics []models.Metric, log *zap.Logger) *Storage {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+	var id uint = 1
 	if len(*s.Metrics) != 0 {
 		*(*s.Metrics)[0].Delta += 5
 
@@ -31,7 +32,7 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		}
 	} else {
 		for _, metric := range metrics {
-			var id uint = 1
+
 			var retMetric models.Metric = models.Metric{
 				ID:        id,
 				Name:      metric.Name,
@@ -94,5 +95,5 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
-	return nil, nil
+	return s.Metrics, nil
 }
