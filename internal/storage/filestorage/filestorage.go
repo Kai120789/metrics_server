@@ -115,6 +115,15 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 		}
 	}
 
+	retMetrics = append(retMetrics, retMetric)
+
+	data, err := json.Marshal(retMetrics)
+	if err != nil {
+		return nil, err
+	}
+
+	os.WriteFile(s.FilePath, data, os.ModePerm)
+
 	return &retMetric, nil
 }
 
