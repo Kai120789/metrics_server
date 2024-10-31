@@ -58,10 +58,10 @@ func StartServer() {
 	r := router.New(&handl)
 
 	// start http-server
-	log.Info("starting server", zap.String("address", "localhost:8082"))
+	log.Info("starting server", zap.String("address", "app:8083"))
 
 	srv := &http.Server{
-		Addr:    "localhost:8082",
+		Addr:    "app:8083",
 		Handler: r,
 	}
 

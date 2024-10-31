@@ -10,7 +10,17 @@ services:
       - "5433:5432"
     networks:
       - task-net
-      
+  app:
+    build: 
+      context: ..
+      dockerfile: ./build/Dockerfile
+    container_name: goapp
+    depends_on: 
+      - postgres
+    ports: 
+      - "8083:8083"
+    networks:
+      - task-net
 volumes:
   db-data:
 
