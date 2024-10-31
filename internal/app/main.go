@@ -46,7 +46,7 @@ func StartServer() {
 	defer dbConn.Close()*/
 
 	// init storage
-	dbstor := storage.New(nil, log, cfg, "")
+	dbstor := storage.New(nil, log, cfg)
 
 	// init service
 	serv := service.New(dbstor)

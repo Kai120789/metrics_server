@@ -19,12 +19,13 @@ type Storage interface {
 	GetMetricsForHTML() (*[]models.Metric, error)
 }
 
-func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config, value string) Storage {
-	if value == cfg.DBDSN {
+func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) Storage {
+	switch {
+	case dbConn != nil:
 		return dbstorage.New(dbConn, log)
-	} else if value == cfg.FilePath {
+	case cfg.FilePath != "":
 		return filestorage.New(cfg.FilePath, log)
+	default:
+		return memstorage.New([]models.Metric{}, &zap.Logger{})
 	}
-
-	return memstorage.New([]models.Metric{}, &zap.Logger{})
 }
