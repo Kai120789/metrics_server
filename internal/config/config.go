@@ -12,6 +12,7 @@ import (
 type Config struct {
 	LogLevel       string
 	ServerURL      string
+	ServerAddress  string
 	StoreInterval  int
 	RestoreMetrics bool
 	FilePath       string
@@ -32,6 +33,7 @@ func GetConfig() (*Config, error) {
 
 	cfg.SecretKey = getEnvStringOrDefault("SECRET_KEY", "default")
 	cfg.ServerURL = getEnvStringOrDefault("SERVER_URL", "http://localhost:8080")
+	cfg.ServerAddress = getEnvStringOrDefault("SERVER_ADDRESS", "localhost:8080")
 	cfg.FilePath = getEnvStringOrDefault("FILEPATH", "")
 	cfg.DBDSN = getEnvStringOrDefault("DBDSN", "postgres://postgres:password@0.0.0.0:5432/dbname")
 
