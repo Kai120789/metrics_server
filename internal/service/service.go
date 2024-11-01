@@ -62,6 +62,12 @@ func (s *Service) GetHTML(w http.ResponseWriter) error {
 		return err
 	}
 
+	var reverse []models.Metric
+
+	for i := len(*metrics) - 1; i >= 0; i-- {
+		reverse = append(reverse, (*metrics)[i])
+	}
+
 	// Подготовка шаблона HTML для отображения метрик
 	tmpl := `
 	<!DOCTYPE html>
@@ -102,7 +108,7 @@ func (s *Service) GetHTML(w http.ResponseWriter) error {
 		return err
 	}
 
-	err = t.Execute(w, metrics)
+	err = t.Execute(w, reverse)
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
