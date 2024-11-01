@@ -15,6 +15,7 @@ type Config struct {
 	ServerAddress  string
 	StoreInterval  int
 	RestoreMetrics bool
+	Migrations     bool
 	FilePath       string
 	DBDSN          string
 	SecretKey      string
@@ -28,6 +29,7 @@ func GetConfig() (*Config, error) {
 	flag.StringVar(&cfg.ServerURL, "a", "http://localhost:8080", "URL and port to run server")
 	flag.IntVar(&cfg.StoreInterval, "i", 20, "Interval for saving metrics (sec)")
 	flag.BoolVar(&cfg.RestoreMetrics, "r", false, "Restor metrics from file")
+	flag.BoolVar(&cfg.Migrations, "m", false, "Migrations for db")
 	flag.StringVar(&cfg.FilePath, "f", "", "Path to file with saving metrics")
 	flag.StringVar(&cfg.DBDSN, "d", "", "DBDSN for database")
 
@@ -43,13 +45,6 @@ func GetConfig() (*Config, error) {
 	}
 
 	cfg.StoreInterval = *storeInt
-
-	restoreMet, err := getEnvBoolOrDefault("RESTORE_METRICS", false)
-	if err != nil {
-		return nil, err
-	}
-
-	cfg.RestoreMetrics = *restoreMet
 
 	if envLogLevel := os.Getenv("LOG_LEVEL"); envLogLevel != "" {
 		cfg.LogLevel = envLogLevel
@@ -77,18 +72,6 @@ func getEnvIntOrDefault(name string, defaultValue int) (*int, error) {
 			return nil, err
 		}
 		return &intEnvInt, nil
-	}
-
-	return &defaultValue, nil
-}
-
-func getEnvBoolOrDefault(name string, defaultValue bool) (*bool, error) {
-	if envBool := os.Getenv(name); envBool != "" {
-		boolEnvBool, err := strconv.ParseBool(envBool)
-		if err != nil {
-			return nil, err
-		}
-		return &boolEnvBool, nil
 	}
 
 	return &defaultValue, nil
