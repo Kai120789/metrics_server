@@ -19,7 +19,7 @@ func main() {
 	dbDSN := os.Getenv("DBDSN")
 
 	// reedit string for use migrations out of docker
-	migrateDsn := dbDSN[:27] + "localhost:5433/taskdb?sslmode=disable"
+	migrateDsn := dbDSN[:27] + "postgres:5432/taskdb?sslmode=disable"
 
 	fmt.Println(migrateDsn)
 

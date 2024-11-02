@@ -13,12 +13,23 @@ services:
   app:
     build: 
       context: ..
-      dockerfile: ./build/Dockerfile
+      dockerfile: ./build/server/Dockerfile
     container_name: goapp
     depends_on: 
       - postgres
     ports: 
       - "8083:8083"
+    networks:
+      - task-net
+  migrations:
+    build: 
+      context: ..
+      dockerfile: ./build/migrator/Dockerfile
+    container_name: goapp2
+    depends_on: 
+      - postgres
+    ports: 
+      - "8082:8082"
     networks:
       - task-net
 volumes:
