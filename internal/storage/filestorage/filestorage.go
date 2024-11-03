@@ -43,7 +43,7 @@ func CreateFile(filePath string) (*os.File, error) {
 	return nil, nil
 }
 
-func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+func (s *Storage) SetUpdates(metrics []dto.Metric) ([]models.Metric, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -87,7 +87,7 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		return nil, err
 	}
 
-	return &retMetrics, nil
+	return retMetrics, nil
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
@@ -155,7 +155,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return &value, nil
 }
 
-func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+func (s *Storage) GetMetricsForHTML() ([]models.Metric, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -164,7 +164,7 @@ func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
 		return nil, err
 	}
 
-	return &retMetrics, nil
+	return retMetrics, nil
 }
 
 func (s *Storage) readMetrics() ([]models.Metric, error) {

@@ -21,7 +21,7 @@ type Handler struct {
 }
 
 type Handlerer interface {
-	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
+	SetUpdates(metrics []dto.Metric) ([]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
 	GetMetricValue(name string, typeStr string) (*int64, error)
 	GetHTML(w http.ResponseWriter) error

@@ -13,10 +13,10 @@ type Service struct {
 }
 
 type Storager interface {
-	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
+	SetUpdates(metrics []dto.Metric) ([]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
 	GetMetricValue(name string, typeStr string) (*int64, error)
-	GetMetricsForHTML() (*[]models.Metric, error)
+	GetMetricsForHTML() ([]models.Metric, error)
 }
 
 func New(s Storager) *Service {
@@ -25,7 +25,7 @@ func New(s Storager) *Service {
 	}
 }
 
-func (s *Service) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+func (s *Service) SetUpdates(metrics []dto.Metric) ([]models.Metric, error) {
 	met, err := s.storage.SetUpdates(metrics)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -60,12 +60,6 @@ func (s *Service) GetHTML(w http.ResponseWriter) error {
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
-	}
-
-	var reverse []models.Metric
-
-	for i := len(*metrics) - 1; i >= 0; i-- {
-		reverse = append(reverse, (*metrics)[i])
 	}
 
 	// Подготовка шаблона HTML для отображения метрик
@@ -108,7 +102,7 @@ func (s *Service) GetHTML(w http.ResponseWriter) error {
 		return err
 	}
 
-	err = t.Execute(w, reverse)
+	err = t.Execute(w, metrics)
 	if err != nil {
 		fmt.Println(err.Error())
 		return err

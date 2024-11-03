@@ -32,7 +32,7 @@ func Connection(connectionStr string) (*pgxpool.Pool, error) {
 	return db, nil
 }
 
-func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+func (s *Storage) SetUpdates(metrics []dto.Metric) ([]models.Metric, error) {
 
 	var retMetrics []models.Metric
 	next := s.getNextPollCountDelta()
@@ -55,7 +55,7 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 		retMetrics = append(retMetrics, retMetric)
 	}
 
-	return &retMetrics, nil
+	return retMetrics, nil
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
@@ -88,7 +88,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return &value, nil
 }
 
-func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+func (s *Storage) GetMetricsForHTML() ([]models.Metric, error) {
 	query := `SELECT * FROM metrics ORDER BY created_at DESC LIMIT 31`
 	rows, err := s.Conn.Query(context.Background(), query)
 	if err != nil {
@@ -108,7 +108,7 @@ func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
 		metrics = append(metrics, metric)
 	}
 
-	return &metrics, nil
+	return metrics, nil
 }
 
 func (s *Storage) getNextPollCountDelta() *int64 {

@@ -13,6 +13,7 @@ import (
 	"server/internal/utils"
 	"server/pkg/logger"
 
+	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
 )
 
@@ -42,6 +43,8 @@ func StartServer() {
 		}
 	}
 
+	var dbConn *pgxpool.Pool
+
 	// connect to db postgres
 	if cfg.DBDSN != "" {
 		// flag for migrations
@@ -58,7 +61,7 @@ func StartServer() {
 	}
 
 	// init storage
-	dbstor := storage.New(nil, log, cfg)
+	dbstor := storage.New(dbConn, log, cfg)
 
 	// init service
 	serv := service.New(dbstor)

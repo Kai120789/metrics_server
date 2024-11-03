@@ -11,29 +11,29 @@ import (
 )
 
 type Storage struct {
-	Metrics *[]models.Metric
+	Metrics []models.Metric
 	Logger  *zap.Logger
 	mu      sync.Mutex
 }
 
 func New(metrics []models.Metric, log *zap.Logger) *Storage {
 	return &Storage{
-		Metrics: &metrics,
+		Metrics: metrics,
 		Logger:  log,
 	}
 }
 
-func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+func (s *Storage) SetUpdates(metrics []dto.Metric) ([]models.Metric, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	var id uint = 1
-	if len(*s.Metrics) != 0 {
-		*(*s.Metrics)[0].Delta += 5
+	if len(s.Metrics) != 0 {
+		*(s.Metrics)[0].Delta += 5
 
-		for i := range *s.Metrics {
-			(*s.Metrics)[i].Value = (metrics)[i].Value
-			(*s.Metrics)[i].CreatedAt = time.Now()
+		for i := range s.Metrics {
+			s.Metrics[i].Value = (metrics)[i].Value
+			s.Metrics[i].CreatedAt = time.Now()
 		}
 	} else {
 		for _, metric := range metrics {
@@ -49,11 +49,11 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 
 			id += 1
 
-			*s.Metrics = append(*s.Metrics, retMetric)
+			s.Metrics = append(s.Metrics, retMetric)
 		}
 	}
 
-	fmt.Println(*((*s.Metrics)[0].Delta))
+	fmt.Println(*(s.Metrics)[0].Delta)
 
 	return s.Metrics, nil
 }
@@ -65,7 +65,7 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	var retMetric models.Metric
 	var flag bool = true
 
-	for _, met := range *s.Metrics {
+	for _, met := range s.Metrics {
 		if met.Name == metric.Name && met.Type == metric.Type {
 			met.Value = metric.Value
 			met.Delta = metric.Delta
@@ -76,7 +76,7 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 
 	if flag {
 		retMetric = models.Metric{
-			ID:        uint(len(*s.Metrics) + 1),
+			ID:        uint(len(s.Metrics) + 1),
 			Name:      metric.Name,
 			Type:      metric.Type,
 			Value:     metric.Value,
@@ -85,7 +85,7 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 		}
 	}
 
-	*s.Metrics = append(*s.Metrics, retMetric)
+	s.Metrics = append(s.Metrics, retMetric)
 
 	return &retMetric, nil
 }
@@ -96,7 +96,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 
 	var value int64
 
-	for _, metric := range *s.Metrics {
+	for _, metric := range s.Metrics {
 		if metric.Name == name && typeStr == metric.Type {
 			value = int64(*metric.Value)
 		}
@@ -105,7 +105,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 	return &value, nil
 }
 
-func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+func (s *Storage) GetMetricsForHTML() ([]models.Metric, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.Metrics, nil

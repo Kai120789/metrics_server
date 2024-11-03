@@ -13,10 +13,10 @@ import (
 )
 
 type Storage interface {
-	SetUpdates(metrics []dto.Metric) (*[]models.Metric, error)
+	SetUpdates(metrics []dto.Metric) ([]models.Metric, error)
 	SetMetric(metric dto.Metric) (*models.Metric, error)
 	GetMetricValue(name string, typeStr string) (*int64, error)
-	GetMetricsForHTML() (*[]models.Metric, error)
+	GetMetricsForHTML() ([]models.Metric, error)
 }
 
 func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) Storage {
