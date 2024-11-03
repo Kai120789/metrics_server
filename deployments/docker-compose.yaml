@@ -10,22 +10,22 @@ services:
       - "5433:5432"
     networks:
       - task-net
-  app:
+  server:
     build: 
       context: ..
       dockerfile: ./build/server/Dockerfile
-    container_name: goapp
+    container_name: server
     depends_on: 
       - postgres
     ports: 
       - "8083:8083"
     networks:
       - task-net
-  migrations:
+  migrator:
     build: 
       context: ..
       dockerfile: ./build/migrator/Dockerfile
-    container_name: goapp2
+    container_name: migrator
     depends_on: 
       - postgres
     ports: 

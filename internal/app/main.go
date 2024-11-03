@@ -61,7 +61,7 @@ func StartServer() {
 			utils.DoMigrate()
 		}
 
-		dbConn, err := dbstorage.Connection(cfg.DBDSN)
+		dbConn, err = dbstorage.Connection(cfg.DBDSN)
 		if err != nil {
 			log.Fatal("error connect to db", zap.Error(err))
 		}
