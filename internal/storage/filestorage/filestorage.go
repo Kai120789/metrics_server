@@ -6,6 +6,7 @@ import (
 	"os"
 	"server/internal/dto"
 	"server/internal/models"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -14,6 +15,7 @@ import (
 type Storage struct {
 	FilePath string
 	Logger   *zap.Logger
+	mu       sync.Mutex
 }
 
 func New(fp string, log *zap.Logger) *Storage {
@@ -42,6 +44,9 @@ func CreateFile(filePath string) (*os.File, error) {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	retMetricsPrev, err := s.readMetrics()
 	if err != nil {
 		return nil, err
@@ -86,6 +91,9 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	retMetrics, err := s.readMetrics()
 	if err != nil {
 		return nil, err
@@ -128,6 +136,9 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 }
 
 func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	retMetrics, err := s.readMetrics()
 	if err != nil {
 		return nil, err
@@ -145,6 +156,9 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	retMetrics, err := s.readMetrics()
 	if err != nil {
 		return nil, err

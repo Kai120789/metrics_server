@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/internal/dto"
 	"server/internal/models"
+	"sync"
 	"time"
 
 	"go.uber.org/zap"
@@ -12,6 +13,7 @@ import (
 type Storage struct {
 	Metrics *[]models.Metric
 	Logger  *zap.Logger
+	mu      sync.Mutex
 }
 
 func New(metrics []models.Metric, log *zap.Logger) *Storage {
@@ -22,6 +24,9 @@ func New(metrics []models.Metric, log *zap.Logger) *Storage {
 }
 
 func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	var id uint = 1
 	if len(*s.Metrics) != 0 {
 		*(*s.Metrics)[0].Delta += 5
@@ -54,6 +59,9 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) (*[]models.Metric, error) {
 }
 
 func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	var retMetric models.Metric
 	var flag bool = true
 
@@ -83,6 +91,9 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 }
 
 func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	var value int64
 
 	for _, metric := range *s.Metrics {
@@ -95,5 +106,7 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 }
 
 func (s *Storage) GetMetricsForHTML() (*[]models.Metric, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return s.Metrics, nil
 }
