@@ -6,7 +6,6 @@ import (
 	"server/internal/config"
 	"server/internal/service"
 	"server/internal/storage"
-	"server/internal/storage/dbstorage"
 	"server/internal/transport/http/handler"
 	"server/internal/transport/http/router"
 	"server/pkg/logger"
@@ -39,15 +38,15 @@ func StartServer() {
 	}*/
 
 	// connect to db postgres
-	dbConn, err := dbstorage.Connection(cfg.DBDSN)
+	/*dbConn, err := dbstorage.Connection(cfg.DBDSN)
 	if err != nil {
 		log.Fatal("error connect to db", zap.Error(err))
 	}
 
-	defer dbConn.Close()
+	defer dbConn.Close()*/
 
 	// init storage
-	dbstor := storage.New(dbConn, log, cfg)
+	dbstor := storage.New(nil, log, cfg)
 
 	// init service
 	serv := service.New(dbstor)

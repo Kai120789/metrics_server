@@ -22,10 +22,13 @@ type Storage interface {
 func New(dbConn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) Storage {
 	switch {
 	case dbConn != nil:
+		log.Info("used postgres")
 		return dbstorage.New(dbConn, log)
 	case cfg.FilePath != "":
+		log.Info("used file")
 		return filestorage.New(cfg.FilePath, log)
 	default:
+		log.Info("used memory")
 		return memstorage.New([]models.Metric{}, &zap.Logger{})
 	}
 }
