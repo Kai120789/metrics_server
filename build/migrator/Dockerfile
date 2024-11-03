@@ -1,4 +1,4 @@
-FROM golang:1.23.1-alpine
+FROM golang:1.23.1
 
 WORKDIR /app
 
@@ -8,6 +8,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o ./goapp2 cmd/migrator/migrator.go
+RUN go build -o ./migrator cmd/migrator/migrator.go
 
-CMD ["./goapp2"]
+CMD ["./migrator"]

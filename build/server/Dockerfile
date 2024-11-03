@@ -1,4 +1,4 @@
-FROM golang:1.23.1-alpine
+FROM golang:1.23.1
 
 WORKDIR /app
 
@@ -8,6 +8,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o ./goapp cmd/server/server.go
+RUN go build -o ./server cmd/server/server.go
 
-CMD ["./goapp"]
+CMD ["./server"]
