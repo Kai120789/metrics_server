@@ -37,7 +37,7 @@ func GetConfig() (*Config, error) {
 	cfg.ServerURL = getEnvStringOrDefault("SERVER_URL", "http://localhost:8080")
 	cfg.ServerAddress = getEnvStringOrDefault("SERVER_ADDRESS", "localhost:8080")
 	cfg.FilePath = getEnvStringOrDefault("FILEPATH", "")
-	cfg.DBDSN = getEnvStringOrDefault("DBDSN", "postgres://postgres:password@0.0.0.0:5432/dbname")
+	cfg.DBDSN = getEnvStringOrDefault("DBDSN", "")
 
 	storeInt, err := getEnvIntOrDefault("STORE_INTERVAL", 20)
 	if err != nil {
