@@ -3,11 +3,11 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"server/internal/config"
 	"server/internal/service"
 	"server/internal/storage"
 	"server/internal/storage/dbstorage"
-	"server/internal/storage/filestorage"
 	"server/internal/transport/http/handler"
 	"server/internal/transport/http/router"
 	"server/internal/utils"
@@ -37,9 +37,18 @@ func StartServer() {
 	log := zapLog.ZapLogger
 
 	if cfg.FilePath != "" {
-		_, err = filestorage.CreateFile(cfg.FilePath)
-		if err != nil {
-			return
+		// check is file exist
+		if _, err := os.Stat(cfg.FilePath); os.IsNotExist(err) {
+			file, err := os.Create(cfg.FilePath)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			defer file.Close()
+			fmt.Println("file succesfully created:", cfg.FilePath)
+
+		} else {
+			fmt.Println("file is exist now:", cfg.FilePath)
 		}
 	}
 
@@ -62,6 +71,15 @@ func StartServer() {
 
 	// init storage
 	dbstor := storage.New(dbConn, log, cfg)
+
+	if cfg.RestoreMetrics {
+		allMetrics, err := dbstor.GetMetricsForHTML()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		fmt.Println(allMetrics)
+	}
 
 	// init service
 	serv := service.New(dbstor)
