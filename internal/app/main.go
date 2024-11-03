@@ -10,6 +10,7 @@ import (
 	"server/internal/storage/filestorage"
 	"server/internal/transport/http/handler"
 	"server/internal/transport/http/router"
+	"server/internal/utils"
 	"server/pkg/logger"
 
 	"go.uber.org/zap"
@@ -43,6 +44,11 @@ func StartServer() {
 
 	// connect to db postgres
 	if cfg.DBDSN != "" {
+		// flag for migrations
+		if cfg.Migrations {
+			utils.DoMigrate()
+		}
+
 		dbConn, err := dbstorage.Connection(cfg.DBDSN)
 		if err != nil {
 			log.Fatal("error connect to db", zap.Error(err))
