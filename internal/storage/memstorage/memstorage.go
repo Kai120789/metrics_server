@@ -29,7 +29,9 @@ func (s *Storage) SetUpdates(metrics []dto.Metric) ([]models.Metric, error) {
 
 	var id uint = 1
 	if len(s.Metrics) != 0 {
-		*(s.Metrics)[0].Delta += 5
+		if s.Metrics[0].Delta != nil {
+			*(s.Metrics)[0].Delta += 5
+		}
 
 		for i := range s.Metrics {
 			s.Metrics[i].Value = (metrics)[i].Value
