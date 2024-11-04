@@ -15,6 +15,7 @@ require (
 	github.com/jackc/pgtype v1.14.0 // indirect
 	github.com/jackc/puddle v1.3.0 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/pkg/errors v0.8.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
@@ -25,9 +26,11 @@ require (
 
 require (
 	github.com/go-chi/chi/v5 v5.1.0
+	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
+	github.com/pashagolub/pgxmock v1.8.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/multierr v1.10.0 // indirect
 )

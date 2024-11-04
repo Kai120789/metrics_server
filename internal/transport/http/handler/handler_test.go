@@ -1,4 +1,4 @@
-package handler
+package handler_test
 
 import (
 	"bytes"
@@ -8,6 +8,7 @@ import (
 	"server/internal/config"
 	"server/internal/dto"
 	"server/internal/models"
+	"server/internal/transport/http/handler"
 	"server/internal/utils"
 	"testing"
 
@@ -46,7 +47,7 @@ func TestSetUpdates(t *testing.T) {
 	mockService := new(MockHandlerer)
 	logger := zap.NewNop()
 	conf := &config.Config{SecretKey: "test-secret"}
-	h := New(mockService, logger, conf)
+	h := handler.New(mockService, logger, conf)
 
 	// metrics for send and res
 	metrics := []dto.Metric{
@@ -89,7 +90,7 @@ func TestSetMetric(t *testing.T) {
 	mockService := new(MockHandlerer)
 	logger := zap.NewNop()
 	conf := &config.Config{}
-	h := New(mockService, logger, conf)
+	h := handler.New(mockService, logger, conf)
 
 	// init router
 	r := chi.NewRouter()
@@ -119,7 +120,7 @@ func TestGetMetricValue(t *testing.T) {
 	mockService := new(MockHandlerer)
 	logger := zap.NewNop()
 	conf := &config.Config{}
-	h := New(mockService, logger, conf)
+	h := handler.New(mockService, logger, conf)
 
 	r := chi.NewRouter()
 	r.Get("/value/{type}/{name}", h.GetMetricValue)
@@ -143,7 +144,7 @@ func TestGetHTML(t *testing.T) {
 	mockService := new(MockHandlerer)
 	logger := zap.NewNop()
 	conf := &config.Config{}
-	h := New(mockService, logger, conf)
+	h := handler.New(mockService, logger, conf)
 
 	mockService.On("GetHTML", mock.Anything).Return(nil)
 
