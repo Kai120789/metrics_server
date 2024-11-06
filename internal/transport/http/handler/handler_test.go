@@ -32,9 +32,9 @@ func (m *MockHandlerer) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return args.Get(0).(*models.Metric), args.Error(1)
 }
 
-func (m *MockHandlerer) GetMetricValue(name, typeStr string) (*int64, error) {
+func (m *MockHandlerer) GetMetricValue(name, typeStr string) (*float64, error) {
 	args := m.Called(name, typeStr)
-	return args.Get(0).(*int64), args.Error(1)
+	return args.Get(0).(*float64), args.Error(1)
 }
 
 func (m *MockHandlerer) GetHTML(w http.ResponseWriter) error {
@@ -125,7 +125,7 @@ func TestGetMetricValue(t *testing.T) {
 	r := chi.NewRouter()
 	r.Get("/value/{type}/{name}", h.GetMetricValue)
 
-	value := int64(100)
+	value := float64(100)
 	mockService.On("GetMetricValue", "test_metric", "gauge").Return(&value, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/value/gauge/test_metric", nil)

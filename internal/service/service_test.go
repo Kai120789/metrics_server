@@ -27,9 +27,9 @@ func (m *MockStorager) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return args.Get(0).(*models.Metric), args.Error(1)
 }
 
-func (m *MockStorager) GetMetricValue(name string, typeStr string) (*int64, error) {
+func (m *MockStorager) GetMetricValue(name string, typeStr string) (*float64, error) {
 	args := m.Called(name, typeStr)
-	return args.Get(0).(*int64), args.Error(1)
+	return args.Get(0).(*float64), args.Error(1)
 }
 
 func (m *MockStorager) GetMetricsForHTML() ([]models.Metric, error) {
@@ -78,7 +78,7 @@ func TestGetMetricValue(t *testing.T) {
 	mockStorage := new(MockStorager)
 	srv := service.New(mockStorage)
 
-	expectedValue := int64(42)
+	expectedValue := float64(42.44)
 	mockStorage.On("GetMetricValue", "test_metric", "counter").Return(&expectedValue, nil)
 
 	value, err := srv.GetMetricValue("test_metric", "counter")

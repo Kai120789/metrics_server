@@ -135,7 +135,7 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return &retMetric, nil
 }
 
-func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
+func (s *Storage) GetMetricValue(name string, typeStr string) (*float64, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -144,11 +144,11 @@ func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
 		return nil, err
 	}
 
-	var value int64
+	var value float64
 
 	for _, metric := range retMetrics {
 		if metric.Name == name && typeStr == metric.Type {
-			value = int64(*metric.Value)
+			value = float64(*metric.Value)
 		}
 	}
 

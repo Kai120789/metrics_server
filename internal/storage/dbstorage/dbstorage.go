@@ -70,8 +70,8 @@ func (s *Storage) SetMetric(metric dto.Metric) (*models.Metric, error) {
 	return &retMetric, nil
 }
 
-func (s *Storage) GetMetricValue(name string, typeStr string) (*int64, error) {
-	var value int64
+func (s *Storage) GetMetricValue(name string, typeStr string) (*float64, error) {
+	var value float64
 
 	query := `SELECT value FROM metrics WHERE name = $1 AND type = $2 ORDER BY created_at DESC`
 	row := s.Conn.QueryRow(context.Background(), query, name, typeStr)
