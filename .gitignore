@@ -1,2 +1,3 @@
 .env
-./filestorage/metrics.json
+/filestorage/metrics.json
+/testdb
