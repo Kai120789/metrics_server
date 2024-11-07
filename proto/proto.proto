@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package metrics;
+
+option go_package = "server/internal/proto";
+
+// metric dto struct
+message MetricDTO {
+    string name = 1;
+    string type = 2;
+    double value = 3;
+    int64 delta = 4;
+}
+
+// metric dto struct
+message MetricModel {
+    uint32 id = 1;
+    string name = 2;
+    string type = 3;
+    double value = 4;
+    int64 delta = 5;
+    string created_at = 6;
+}
+
+// requests and responses for methods
+message SetUpdatesRequest {
+    repeated MetricDTO metrics = 1;
+}
+
+message SetUpdatesResponse {
+    repeated MetricModel metrics = 1;
+}
+
+message SetMetricRequest {
+    string name = 1;
+    string type = 2;
+    double value = 3;
+}
+
+message SetMetricResponse {
+    MetricModel metric = 1;
+}
+
+message GetMetricValueRequest {
+    string name = 1;
+    string type = 2;
+}
+
+message GetMetricValueResponse {
+    double value = 1;
+}
+
+message GetHTMLRequest {
+   
+}
+
+message GetHTMLResponse {
+    string html_content = 1;
+}
+
+// service for metrics
+service MetricService {
+    // set batdhed metrics request
+    rpc SetUpdates(SetUpdatesRequest) returns (SetUpdatesResponse);
+
+    // set metric from URL
+    rpc SetMetric(SetMetricRequest) returns (SetMetricResponse);
+
+    // get metric value by name and type
+    rpc GetMetricValue(GetMetricValueRequest) returns (GetMetricValueResponse);
+
+    // get HTML page with metrics
+    rpc GetHTML(GetHTMLRequest) returns (GetHTMLResponse);
+}
