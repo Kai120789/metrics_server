@@ -2,9 +2,11 @@ package router
 
 import (
 	"net/http"
+	_ "server/docs"
 	"server/internal/transport/http/handler"
 
 	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Router interface {
@@ -17,6 +19,8 @@ type Router interface {
 
 func New(h *handler.Handler) http.Handler {
 	r := chi.NewRouter()
+
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	r.Route("/api", func(r chi.Router) {
 		r.Post("/updates", h.SetUpdates)

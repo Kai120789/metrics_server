@@ -1,0 +1,152 @@
+definitions:
+  dto.Metric:
+    properties:
+      delta:
+        description: Изменение для метрик типа counter
+        type: integer
+      name:
+        description: Название метрики
+        type: string
+      type:
+        description: Тип метрики (counter или gauge)
+        type: string
+      value:
+        description: Значение для метрик типа gauge
+        type: number
+    type: object
+  models.Metric:
+    properties:
+      created_at:
+        description: Время создания метрики
+        type: string
+      delta:
+        description: Изменение для метрик типа counter
+        type: integer
+      id:
+        description: Уникальный идентификатор метрики
+        type: integer
+      name:
+        description: Название метрики
+        type: string
+      type:
+        description: Тип метрики (counter или gauge)
+        type: string
+      value:
+        description: Значение для метрик типа gauge
+        type: number
+    type: object
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      description: Renders an HTML page with all stored metrics
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: HTML page with metrics
+          schema:
+            type: string
+      summary: Display metrics in HTML
+      tags:
+      - Metrics
+  /api/{type}/{name}/{value}:
+    post:
+      consumes:
+      - application/json
+      description: Accepts a metric value from URL parameters and updates or creates
+        the metric
+      parameters:
+      - description: Metric type (e.g., gauge, counter)
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Metric name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Metric value
+        in: path
+        name: value
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Metric'
+        "400":
+          description: Invalid Value
+          schema:
+            type: string
+      summary: Update or create a single metric
+      tags:
+      - Metrics
+  /api/updates:
+    post:
+      consumes:
+      - application/json
+      description: Accepts a JSON array of metrics and updates them in the database
+      parameters:
+      - description: Array of metrics to update
+        in: body
+        name: metrics
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/dto.Metric'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/models.Metric'
+            type: array
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "401":
+          description: Missing or invalid Hash header
+          schema:
+            type: string
+      summary: Update multiple metrics
+      tags:
+      - Metrics
+  /api/value/{type}/{name}:
+    get:
+      description: Returns the value of a specified metric by its type and name
+      parameters:
+      - description: Metric type
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: Metric name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: number
+        "404":
+          description: Metric not found
+          schema:
+            type: string
+      summary: Retrieve a metric value
+      tags:
+      - Metrics
+swagger: "2.0"
