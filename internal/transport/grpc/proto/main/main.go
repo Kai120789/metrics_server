@@ -54,12 +54,11 @@ func main() {
 		defer dbConn.Close()
 	}
 
-	// Создание экземпляра Service с нужным хранилищем
 	storage := storage.New(dbConn, log, cfg)
 	svc := service.New(storage)
 	grpcServer := grpc.NewServer()
 
-	// Создание и регистрация gRPC-сервера
+	// create and reg grpc-server
 	grpcServerInstance := server.NewGRPCServer(svc)
 	proto.RegisterMetricServiceServer(grpcServer, grpcServerInstance)
 
@@ -68,7 +67,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Println("Сервер gRPC запущен на :50051")
+	fmt.Println("server gRPC start on :50051")
 	if err := grpcServer.Serve(listener); err != nil {
 		fmt.Println(err.Error())
 	}

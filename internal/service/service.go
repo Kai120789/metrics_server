@@ -62,7 +62,7 @@ func (s *Service) GetHTML(w http.ResponseWriter) error {
 		return err
 	}
 
-	// Подготовка шаблона HTML для отображения метрик
+	// template for metrics
 	tmpl := `
 	<!DOCTYPE html>
 	<html lang="en">

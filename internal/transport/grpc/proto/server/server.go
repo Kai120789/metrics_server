@@ -7,20 +7,16 @@ import (
 	"server/internal/transport/grpc/proto"
 )
 
-// GRPCServer — структура, реализующая интерфейс proto.MetricServiceServer
 type GRPCServer struct {
 	proto.UnimplementedMetricServiceServer
 	service *service.Service
 }
 
-// NewGRPCServer создает новый GRPCServer
 func NewGRPCServer(s *service.Service) *GRPCServer {
 	return &GRPCServer{service: s}
 }
 
-// SetUpdates реализует метод SetUpdates gRPC сервиса
 func (s *GRPCServer) SetUpdates(ctx context.Context, req *proto.SetUpdatesRequest) (*proto.SetUpdatesResponse, error) {
-	// Преобразование запроса в формат, который использует Service
 	var metrics []dto.Metric
 	for _, m := range req.Metrics {
 		metrics = append(metrics, dto.Metric{
@@ -31,13 +27,11 @@ func (s *GRPCServer) SetUpdates(ctx context.Context, req *proto.SetUpdatesReques
 		})
 	}
 
-	// Вызов метода SetUpdates из Service
 	updatedMetrics, err := s.service.SetUpdates(metrics)
 	if err != nil {
 		return nil, err
 	}
 
-	// Преобразование ответа в формат gRPC
 	var response proto.SetUpdatesResponse
 	for _, m := range updatedMetrics {
 		response.Metrics = append(response.Metrics, &proto.MetricModel{
@@ -53,7 +47,6 @@ func (s *GRPCServer) SetUpdates(ctx context.Context, req *proto.SetUpdatesReques
 	return &response, nil
 }
 
-// SetMetric реализует метод SetMetric gRPC сервиса
 func (s *GRPCServer) SetMetric(ctx context.Context, req *proto.SetMetricRequest) (*proto.SetMetricResponse, error) {
 	metric := dto.Metric{
 		Name:  req.Name,
@@ -78,7 +71,6 @@ func (s *GRPCServer) SetMetric(ctx context.Context, req *proto.SetMetricRequest)
 	}, nil
 }
 
-// GetMetricValue реализует метод GetMetricValue gRPC сервиса
 func (s *GRPCServer) GetMetricValue(ctx context.Context, req *proto.GetMetricValueRequest) (*proto.GetMetricValueResponse, error) {
 	value, err := s.service.GetMetricValue(req.Name, req.Type)
 	if err != nil {
@@ -88,18 +80,14 @@ func (s *GRPCServer) GetMetricValue(ctx context.Context, req *proto.GetMetricVal
 	return &proto.GetMetricValueResponse{Value: *value}, nil
 }
 
-// GetHTML реализует метод GetHTML gRPC сервиса
 func (s *GRPCServer) GetHTML(ctx context.Context, req *proto.GetHTMLRequest) (*proto.GetHTMLResponse, error) {
-	// Создание CustomResponseWriter для записи HTML-ответа
 	responseWriter := NewCustomResponseWriter()
 
-	// Вызов метода GetHTML с использованием CustomResponseWriter
 	err := s.service.GetHTML(responseWriter)
 	if err != nil {
 		return nil, err
 	}
 
-	// Получение HTML-контента из буфера
 	htmlContent := responseWriter.Buffer.String()
 
 	return &proto.GetHTMLResponse{HtmlContent: htmlContent}, nil
