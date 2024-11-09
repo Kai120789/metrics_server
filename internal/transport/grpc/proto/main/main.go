@@ -46,7 +46,7 @@ func main() {
 			utils.DoMigrate()
 		}
 
-		dbConn, err = dbstorage.Connection("postgres://postgres:123456@localhost:5433/metrics")
+		dbConn, err = dbstorage.Connection(string(cfg.DBDSN[:27]) + "localhost:5433/metrics")
 		if err != nil {
 			log.Fatal("error connect to db", zap.Error(err))
 		}
