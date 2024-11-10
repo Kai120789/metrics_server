@@ -32,7 +32,7 @@ func TestSetMetric(t *testing.T) {
 	defer logger.Sync()
 	storage := New(testDB, logger)
 
-	value := float64(123)
+	var value float64 = 123
 	metric := dto.Metric{
 		Name:  "test_metric",
 		Type:  "gauge",
@@ -54,7 +54,7 @@ func TestSetUpdates(t *testing.T) {
 	defer logger.Sync()
 	storage := New(testDB, logger)
 
-	delta := int64(5)
+	var delta int64 = 5
 	metrics := []dto.Metric{
 		{Name: "test_counter", Type: "counter", Value: new(float64), Delta: &delta},
 	}
@@ -74,7 +74,7 @@ func TestGetMetricValue(t *testing.T) {
 	defer logger.Sync()
 	storage := New(testDB, logger)
 
-	val := float64(5)
+	var val float64 = 5
 	metric := dto.Metric{
 		Name:  "test_metric",
 		Type:  "gauge",

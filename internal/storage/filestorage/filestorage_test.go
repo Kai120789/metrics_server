@@ -1,7 +1,6 @@
 package filestorage_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -16,7 +15,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// Создайте мок для FileSystem
 type MockFileSystem struct {
 	mock.Mock
 }
@@ -58,7 +56,6 @@ func (m *MockFileSystem) Stat(name string) (os.FileInfo, error) {
 	return args.Get(0).(os.FileInfo), args.Error(1)
 }
 
-// Примеры тестов
 func TestSetUpdates(t *testing.T) {
 	mockFileSystem := new(MockFileSystem)
 	logger := zap.NewNop()
@@ -66,22 +63,18 @@ func TestSetUpdates(t *testing.T) {
 
 	var delta int64 = 5
 
-	// Arrange
 	metrics := []dto.Metric{
 		{Name: "test_metric1", Type: "counter", Value: nil, Delta: &delta},
 		{Name: "test_metric2", Type: "gauge", Value: new(float64), Delta: nil},
 	}
 
-	// Act
 	returnedMetrics, err := storage.SetUpdates(metrics)
 
-	// Assert
 	require.NoError(t, err)
 	assert.Len(t, returnedMetrics, 2)
 	assert.Equal(t, "test_metric1", returnedMetrics[0].Name)
 	assert.Equal(t, "test_metric2", returnedMetrics[1].Name)
 
-	// Verify that the mock expectations were met
 	mockFileSystem.AssertExpectations(t)
 }
 
@@ -90,19 +83,15 @@ func TestSetMetric(t *testing.T) {
 	logger := zap.NewNop()
 	storage := filestorage.New("./metrics.json", logger)
 
-	// Arrange
-	value := 10.0
+	var value float64 = 10.0
 	metric := dto.Metric{Name: "test_metric", Type: "gauge", Value: &value}
 
-	// Act
 	returnedMetric, err := storage.SetMetric(metric)
 
-	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, "test_metric", returnedMetric.Name)
 	assert.Equal(t, "gauge", returnedMetric.Type)
 
-	// Verify that the mock expectations were met
 	mockFileSystem.AssertExpectations(t)
 }
 
@@ -111,22 +100,14 @@ func TestGetMetricValue(t *testing.T) {
 	logger := zap.NewNop()
 	storage := filestorage.New("./metrics.json", logger)
 
-	// Arrange
 	metric := []models.Metric{
 		{Name: "test_metric", Type: "gauge", Value: nil},
 	}
 
-	data, _ := json.Marshal(metric)
+	value, err := storage.GetMetricValue(metric[0].Name, metric[0].Type)
 
-	_ = data
-
-	// Act
-	value, err := storage.GetMetricValue("test_metric", "gauge")
-
-	// Assert
 	require.NoError(t, err)
 	assert.NotNil(t, value)
 
-	// Verify that the mock expectations were met
 	mockFileSystem.AssertExpectations(t)
 }
