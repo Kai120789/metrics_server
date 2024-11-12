@@ -2,12 +2,15 @@ package app
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"server/internal/config"
 	"server/internal/service"
 	"server/internal/storage"
 	"server/internal/storage/dbstorage"
+	"server/internal/transport/grpc/proto"
+	"server/internal/transport/grpc/proto/server"
 	"server/internal/transport/http/handler"
 	"server/internal/transport/http/router"
 	"server/internal/utils"
@@ -15,6 +18,7 @@ import (
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 func StartServer() {
@@ -82,7 +86,7 @@ func StartServer() {
 	}
 
 	// init service
-	serv := service.New(dbstor)
+	serv := service.New(dbstor, log)
 
 	// init handler
 	handl := handler.New(serv, log, cfg)
@@ -93,6 +97,24 @@ func StartServer() {
 	// start http-server
 	log.Info("starting server", zap.String("address", cfg.ServerAddress))
 
+	go func() {
+		grpcServer := grpc.NewServer()
+
+		// create and reg grpc-server
+		grpcServerInstance := server.NewGRPCServer(serv)
+		proto.RegisterMetricServiceServer(grpcServer, grpcServerInstance)
+
+		listener, err := net.Listen("tcp", ":50051")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		fmt.Println("server gRPC start on :50051")
+		if err := grpcServer.Serve(listener); err != nil {
+			fmt.Println(err.Error())
+		}
+	}()
+
 	srv := &http.Server{
 		Addr:    cfg.ServerAddress,
 		Handler: r,
@@ -101,4 +123,5 @@ func StartServer() {
 	if err := srv.ListenAndServe(); err != nil {
 		log.Error("failed to start server", zap.Error(err))
 	}
+
 }

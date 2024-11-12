@@ -11,6 +11,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"go.uber.org/zap"
 )
 
 type MockStorager struct {
@@ -39,7 +40,7 @@ func (m *MockStorager) GetMetricsForHTML() ([]models.Metric, error) {
 
 func TestSetUpdates(t *testing.T) {
 	mockStorage := new(MockStorager)
-	srv := service.New(mockStorage)
+	srv := service.New(mockStorage, &zap.Logger{})
 
 	metrics := []dto.Metric{
 		{Name: "test_metric1", Type: "counter", Value: nil, Delta: new(int64)},
@@ -60,7 +61,7 @@ func TestSetUpdates(t *testing.T) {
 
 func TestSetMetric(t *testing.T) {
 	mockStorage := new(MockStorager)
-	srv := service.New(mockStorage)
+	srv := service.New(mockStorage, &zap.Logger{})
 
 	metric := dto.Metric{Name: "test_metric", Type: "gauge", Value: new(float64), Delta: nil}
 	expectedMetric := &models.Metric{ID: 1, Name: "test_metric", Type: "gauge", Value: new(float64), CreatedAt: time.Now()}
@@ -76,7 +77,7 @@ func TestSetMetric(t *testing.T) {
 
 func TestGetMetricValue(t *testing.T) {
 	mockStorage := new(MockStorager)
-	srv := service.New(mockStorage)
+	srv := service.New(mockStorage, &zap.Logger{})
 
 	expectedValue := float64(42.44)
 	mockStorage.On("GetMetricValue", "test_metric", "counter").Return(&expectedValue, nil)
@@ -90,7 +91,7 @@ func TestGetMetricValue(t *testing.T) {
 
 func TestGetHTML(t *testing.T) {
 	mockStorage := new(MockStorager)
-	srv := service.New(mockStorage)
+	srv := service.New(mockStorage, &zap.Logger{})
 
 	metrics := []models.Metric{
 		{ID: 1, Name: "test_metric1", Type: "counter", Value: new(float64), Delta: new(int64), CreatedAt: time.Now()},

@@ -6,10 +6,13 @@ import (
 	"server/internal/dto"
 	"server/internal/models"
 	"text/template"
+
+	"go.uber.org/zap"
 )
 
 type Service struct {
 	storage Storager
+	logger  *zap.Logger
 }
 
 type Storager interface {
@@ -19,9 +22,10 @@ type Storager interface {
 	GetMetricsForHTML() ([]models.Metric, error)
 }
 
-func New(s Storager) *Service {
+func New(s Storager, l *zap.Logger) *Service {
 	return &Service{
 		storage: s,
+		logger:  l,
 	}
 }
 
