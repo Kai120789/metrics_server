@@ -94,9 +94,6 @@ func StartServer() {
 	// init router
 	r := router.New(&handl)
 
-	// start http-server
-	log.Info("starting server", zap.String("address", cfg.ServerAddress))
-
 	go func() {
 		grpcServer := grpc.NewServer()
 
@@ -104,7 +101,7 @@ func StartServer() {
 		grpcServerInstance := server.NewGRPCServer(serv)
 		proto.RegisterMetricServiceServer(grpcServer, grpcServerInstance)
 
-		listener, err := net.Listen("tcp", ":50051")
+		listener, err := net.Listen("tcp", "0.0.0.0:50051")
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -114,6 +111,9 @@ func StartServer() {
 			fmt.Println(err.Error())
 		}
 	}()
+
+	// start http-server
+	log.Info("starting server", zap.String("address", cfg.ServerAddress))
 
 	srv := &http.Server{
 		Addr:    cfg.ServerAddress,

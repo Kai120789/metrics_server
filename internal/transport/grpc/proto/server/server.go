@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"server/internal/dto"
-	service "server/internal/service"
+	"server/internal/service"
 	"server/internal/transport/grpc/proto"
 )
 
