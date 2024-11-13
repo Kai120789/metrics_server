@@ -18,12 +18,9 @@ func DoMigrate() {
 
 	dbDSN := os.Getenv("DBDSN")
 
-	// reedit string for use migrations out of docker
-	migrateDsn := dbDSN[:27] + "postgres:5432/metrics?sslmode=disable"
+	fmt.Println(dbDSN)
 
-	fmt.Println(migrateDsn)
-
-	db, err := pgxpool.New(context.Background(), migrateDsn)
+	db, err := pgxpool.New(context.Background(), dbDSN)
 	if err != nil {
 		zap.S().Fatal("connect db error: ", err)
 	}
