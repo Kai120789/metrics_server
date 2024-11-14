@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
@@ -20,7 +20,7 @@ func DoMigrate() {
 
 	fmt.Println(dbDSN)
 
-	db, err := pgxpool.New(context.Background(), dbDSN)
+	db, err := pgxpool.Connect(context.Background(), dbDSN)
 	if err != nil {
 		zap.S().Fatal("connect db error: ", err)
 	}
