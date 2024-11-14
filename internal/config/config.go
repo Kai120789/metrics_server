@@ -10,15 +10,16 @@ import (
 )
 
 type Config struct {
-	LogLevel       string
-	ServerURL      string
-	ServerAddress  string
-	StoreInterval  int
-	RestoreMetrics bool
-	Migrations     bool
-	FilePath       string
-	DBDSN          string
-	SecretKey      string
+	LogLevel          string
+	ServerURL         string
+	ServerAddress     string
+	GRPCServerAddress string
+	StoreInterval     int
+	RestoreMetrics    bool
+	Migrations        bool
+	FilePath          string
+	DBDSN             string
+	SecretKey         string
 }
 
 func GetConfig() (*Config, error) {
@@ -35,6 +36,7 @@ func GetConfig() (*Config, error) {
 
 	cfg.SecretKey = getEnvStringOrDefault("SECRET_KEY", "default")
 	cfg.ServerURL = getEnvStringOrDefault("SERVER_URL", "http://localhost:8080")
+	cfg.GRPCServerAddress = getEnvStringOrDefault("GRPC_SERVER_ADDRESS", "localhost:00000")
 	cfg.ServerAddress = getEnvStringOrDefault("SERVER_ADDRESS", "localhost:8080")
 	cfg.FilePath = getEnvStringOrDefault("FILEPATH", "")
 	cfg.DBDSN = getEnvStringOrDefault("DBDSN", "")

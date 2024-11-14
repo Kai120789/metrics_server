@@ -45,7 +45,7 @@ func StartServer() {
 		if _, err := os.Stat(cfg.FilePath); os.IsNotExist(err) {
 			file, err := os.Create(cfg.FilePath)
 			if err != nil {
-				fmt.Println(err.Error())
+				log.Error("failed to create file", zap.Error(err))
 				return
 			}
 			defer file.Close()
@@ -79,7 +79,7 @@ func StartServer() {
 	if cfg.RestoreMetrics {
 		allMetrics, err := dbstor.GetMetricsForHTML()
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Error("failed to restore metrics", zap.Error(err))
 		}
 
 		fmt.Println(allMetrics)
@@ -101,14 +101,14 @@ func StartServer() {
 		grpcServerInstance := server.NewGRPCServer(serv)
 		proto.RegisterMetricServiceServer(grpcServer, grpcServerInstance)
 
-		listener, err := net.Listen("tcp", "0.0.0.0:50051")
+		listener, err := net.Listen("tcp", cfg.GRPCServerAddress)
 		if err != nil {
-			fmt.Println(err.Error())
+			log.Error("failed tcp", zap.Error(err))
 		}
 
-		fmt.Println("server gRPC start on :50051")
+		fmt.Println("server gRPC start on ", cfg.GRPCServerAddress)
 		if err := grpcServer.Serve(listener); err != nil {
-			fmt.Println(err.Error())
+			log.Error("failed to start gRPC server", zap.Error(err))
 		}
 	}()
 

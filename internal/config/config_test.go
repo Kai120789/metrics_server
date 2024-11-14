@@ -39,6 +39,8 @@ func TestGetConfigWithEnvVariables(t *testing.T) {
 	os.Setenv("DBDSN", "postgres://env_user:env_password@localhost:5432/env_dbname")
 	os.Setenv("SECRET_KEY", "supersecret")
 	os.Setenv("LOG_LEVEL", "info")
+	os.Setenv("GRPC_SERVER_ADDRESS", "localhost:00000")
+	os.Setenv("SERVER_ADDRESS", "localhost:7070")
 
 	defer func() {
 		os.Unsetenv("SERVER_URL")
@@ -49,11 +51,15 @@ func TestGetConfigWithEnvVariables(t *testing.T) {
 		os.Unsetenv("DBDSN")
 		os.Unsetenv("SECRET_KEY")
 		os.Unsetenv("LOG_LEVEL")
+		os.Unsetenv("SERVER_ADDRESS")
+		os.Unsetenv("GRPC_SERVER_ADDRESS")
 	}()
 
 	cfg, err := config.GetConfig()
 	assert.NoError(t, err)
 	assert.Equal(t, "http://localhost:7070", cfg.ServerURL)
+	assert.Equal(t, "localhost:7070", cfg.ServerAddress)
+	assert.Equal(t, "localhost:00000", cfg.GRPCServerAddress)
 	assert.Equal(t, 40, cfg.StoreInterval)
 	assert.Equal(t, "supersecret", cfg.SecretKey)
 	assert.Equal(t, "info", cfg.LogLevel)
