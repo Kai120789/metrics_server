@@ -25,6 +25,19 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
+func TestConnection(t *testing.T) {
+	db, err := Connection("postgres://postgres:root@localhost:5431/testdb?sslmode=disable")
+	require.NoError(t, err)
+	assert.NotNil(t, db)
+	db.Close()
+}
+
+func TestConnectionFall(t *testing.T) {
+	db, err := Connection("postgres://postgres:root@uncorrecthost:5431/testdb?sslmode=disable")
+	require.Error(t, err)
+	assert.Nil(t, db)
+}
+
 func TestSetMetric(t *testing.T) {
 	cleanMetricsDatabase(t, testDB)
 
