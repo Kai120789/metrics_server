@@ -71,7 +71,7 @@ func TestGetMetricValue(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Equal(t, int64(value), *result)
+	assert.Equal(t, float64(value), *result)
 }
 
 func TestGetMetricsForHTML(t *testing.T) {
