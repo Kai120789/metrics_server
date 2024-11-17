@@ -1,8 +1,9 @@
-package utils
+package utils_test
 
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"server/internal/utils"
 	"testing"
 )
 
@@ -16,7 +17,7 @@ func TestGenerateHash(t *testing.T) {
 	expectedHash := hex.EncodeToString(hash.Sum(nil))
 
 	// gen hash by GenerateHash
-	generatedHash := GenerateHash(testKey)
+	generatedHash := utils.GenerateHash(testKey)
 
 	// cimpare generated and expected hashes
 	if generatedHash != expectedHash {

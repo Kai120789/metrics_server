@@ -1,7 +1,7 @@
 mode: set
 server/cmd/migrator/migrator.go:5.13,7.2 1 0
-server/docs/docs.go:253.13,255.2 1 0
 server/cmd/server/server.go:7.13,9.2 1 0
+server/docs/docs.go:253.13,255.2 1 0
 server/internal/app/main.go:24.20,27.16 2 0
 server/internal/app/main.go:27.16,30.3 2 0
 server/internal/app/main.go:32.2,36.16 3 0
@@ -29,6 +29,22 @@ server/internal/app/main.go:109.3,110.52 2 0
 server/internal/app/main.go:110.52,112.4 1 0
 server/internal/app/main.go:116.2,123.45 3 0
 server/internal/app/main.go:123.45,125.3 1 0
+server/internal/config/config.go:25.35,30.20 3 1
+server/internal/config/config.go:30.20,37.3 6 1
+server/internal/config/config.go:39.2,47.16 8 1
+server/internal/config/config.go:47.16,49.3 1 0
+server/internal/config/config.go:51.2,53.62 2 1
+server/internal/config/config.go:53.62,55.3 1 1
+server/internal/config/config.go:55.8,57.3 1 1
+server/internal/config/config.go:59.2,61.17 2 1
+server/internal/config/config.go:64.62,65.51 1 1
+server/internal/config/config.go:65.51,67.3 1 1
+server/internal/config/config.go:69.2,69.21 1 1
+server/internal/config/config.go:72.70,73.45 1 1
+server/internal/config/config.go:73.45,75.17 2 1
+server/internal/config/config.go:75.17,77.4 1 0
+server/internal/config/config.go:78.3,78.25 1 1
+server/internal/config/config.go:81.2,81.27 1 1
 server/internal/service/service.go:25.46,30.2 1 1
 server/internal/service/service.go:32.77,34.16 2 1
 server/internal/service/service.go:34.16,37.3 2 0

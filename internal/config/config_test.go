@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"flag"
 	"os"
 	"server/internal/config"
 	"strconv"
@@ -10,6 +11,8 @@ import (
 )
 
 func TestGetConfigWithFlags(t *testing.T) {
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+
 	os.Args = []string{
 		"cmd",
 		"-a=http://localhost:9090",
